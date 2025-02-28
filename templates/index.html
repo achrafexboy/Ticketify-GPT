@@ -6,6 +6,7 @@
     <title>(Evodev) Ticket notifier</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='evochat.svg') }}">
 </head>
 
 <body>
@@ -28,7 +29,7 @@
                 <form id="assistantForm" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label for="description" class="form-label">What is the client's request or issue?</label>
-                        <textarea class="form-control" id="description" name="description" placeholder="Describe your question or request in detail..." rows="4" required></textarea>
+                        <textarea class="form-control" id="description" name="description" placeholder="Describe your request in detail..." rows="4" required></textarea>
                     </div>
                     
                     <div class="mb-4">
