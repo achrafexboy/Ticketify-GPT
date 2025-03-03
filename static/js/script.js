@@ -9,11 +9,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitSpinner = document.getElementById('submitSpinner');
     const sendToSlackBtn = document.getElementById('sendToSlackBtn');
     const slackSpinner = document.getElementById('slackSpinner');
+    const prioritySelect = document.getElementById('priority'); // ✅ Get priority dropdown
+    // Select all flash messages
+    const flashMessages = document.querySelectorAll(".flash-message");
+
+    
+    // Function to remove a flash message
+    function removeFlashMessage(flashMessage) {
+        if (flashMessage) {
+            flashMessage.classList.add("fade-out"); // Apply fade-out animation
+            setTimeout(() => flashMessage.remove(), 500); // Remove from DOM after animation
+        }
+    }
+
+    // Auto-dismiss flash messages after 5 seconds
+    flashMessages.forEach((flash) => {
+        setTimeout(() => removeFlashMessage(flash), 5000);
+    });
+
+    // Attach event listener to close buttons using event delegation
+    document.body.addEventListener("click", function (event) {
+        if (event.target.classList.contains("flash-close")) {
+            const flashMessage = event.target.closest(".flash-message");
+            removeFlashMessage(flashMessage);
+        }
+    });
 
     // Handle drag and drop file upload
     fileUploadContainer.addEventListener('click', function() {
         photosInput.click();
     });
+
 
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         fileUploadContainer.addEventListener(eventName, preventDefaults, false);
@@ -43,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     fileUploadContainer.addEventListener('drop', handleDrop, false);
+
 
     function handleDrop(e) {
         const dt = e.dataTransfer;
@@ -112,6 +139,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show spinner, disable button
         submitBtn.disabled = true;
         submitSpinner.classList.remove('d-none');
+
+        // 🎇 Trigger Magic Star Effect
+        const magicStars = document.getElementById('magicStars'); // Ensure this exists in index.html
+        if (magicStars) {
+            magicStars.classList.add('active');
+        }
         
         const formData = new FormData(form);
         
@@ -142,6 +175,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Hide spinner, enable button
             submitBtn.disabled = false;
             submitSpinner.classList.add('d-none');
+            
+            // 🎇 Remove magic stars effect at the same time as the spinner
+            magicStars.classList.remove('active');
         });
     });
 
@@ -149,7 +185,8 @@ document.addEventListener('DOMContentLoaded', function() {
     sendToSlackBtn.addEventListener('click', function() {
         // Get the edited response text
         const editedResponse = editableResponseElement.value;
-        
+        const priority = prioritySelect.value; // ✅ Capture selected priority
+
         if (!editedResponse.trim()) {
             showAlert('The message cannot be empty.', 'warning');
             return;
@@ -165,7 +202,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                edited_response: editedResponse
+                edited_response: editedResponse,
+                priority: priority, // ✅ Send priority along with response
             })
         })
         .then(response => response.json())
@@ -200,14 +238,20 @@ document.addEventListener('DOMContentLoaded', function() {
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         `;
-        
+    
         const cardBody = document.querySelector('.card-body');
         cardBody.insertBefore(alertDiv, cardBody.firstChild);
-        
+    
         // Auto dismiss after 5 seconds
         setTimeout(() => {
-            const bsAlert = new bootstrap.Alert(alertDiv);
-            bsAlert.close();
+            alertDiv.classList.remove("show");
+            alertDiv.classList.add("fade");
+            
+            // Smooth removal after fade-out
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 300);
         }, 5000);
     }
+
 });

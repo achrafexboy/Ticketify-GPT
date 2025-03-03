@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - GPT Notifier</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-background">
+        <div class="artistic-shape"></div>
+        <div class="artistic-shape shape-2"></div>
+    </div>
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2 class="auth-title">Create Account</h2>
+            <p class="auth-subtitle">Sign up to get started</p>
+
+            <div id="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <form id="registerForm" method="POST">
+                <div class="mb-3">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                    <div class="error-message" id="usernameError"></div>
+                </div>
+                <div class="mb-3">
+                    <select class="form-control" id="poste" name="poste" required>
+                        <option value="">Select Role</option>
+                        <option value="dev">Developer</option>
+                        <option value="pm">Project Manager</option>
+                        <option value="qa">Quality Assurance</option>
+                        <option value="client">Client</option>
+                    </select>
+                    <div class="error-message" id="roleError"></div>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                    <div class="error-message" id="confirmPasswordError"></div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Register</button>
+            </form>            
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+</html>
