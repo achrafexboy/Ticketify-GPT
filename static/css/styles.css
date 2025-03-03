@@ -69,7 +69,7 @@ body {
     
     /* ✅ Apply Blur Effect */
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 body::before {
     content: "";

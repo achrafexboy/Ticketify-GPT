@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (registerForm) {
         setupValidation(registerForm, [
             { id: "email", validator: validateEmail, errorId: "emailError", message: "Enter a valid email (example@mail.com)" },
-            { id: "username", validator: (val) => val.length >= 3, errorId: "usernameError", message: "Username must be at least 3 characters" },
+            { id: "username", validator: (val) => (val.length >= 3 && val.length <= 20), errorId: "usernameError", message: "Username must be at least 3 characters & at most 20 charecters" },
             { id: "poste", validator: (val) => val !== "", errorId: "roleError", message: "Please select a role" },
             { id: "password", validator: validatePassword, errorId: "passwordError", message: "Password must be at least 8 characters, contain an uppercase letter, a number, and a symbol" },
             { id: "confirm_password", validator: (val) => val === document.getElementById("password").value, errorId: "confirmPasswordError", message: "Passwords do not match" }
