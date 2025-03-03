@@ -2,6 +2,7 @@ import os
 import uuid
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -16,6 +17,7 @@ app.config.from_object(Config)
 
 # Initialize database and login manager
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
@@ -40,6 +42,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(50), unique=True, nullable=False)  # ✅ Separate username
     password_hash = db.Column(db.String(128), nullable=False)
     poste = db.Column(db.String(20), nullable=False)  # ✅ New Role Field (Dev, PM, QA, Client)
+    email_notifications = db.Column(db.Boolean, default=True)  # Default: Enabled
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -144,31 +147,64 @@ def delete_submission(submission_id):
 def account():
     if request.method == 'POST':
         new_username = request.form.get('username')
-        old_password = request.form.get('old_password')
-        new_password = request.form.get('password')
+        new_poste = request.form.get('poste')
 
-        # Validate old password
-        if not check_password_hash(current_user.password_hash, old_password):
-            flash('Incorrect current password!', 'danger')
+        # Check if username is taken (excluding the current user)
+        existing_user = User.query.filter(User.username == new_username, User.id != current_user.id).first()
+        if existing_user:
+            flash("This username is already taken. Please choose another.", "danger")
             return redirect(url_for('account'))
 
-        # Ensure username is unique (if changed)
-        if new_username != current_user.username:
-            existing_user = User.query.filter_by(username=new_username).first()
-            if existing_user:
-                flash('Username already taken', 'danger')
-                return redirect(url_for('account'))
-            current_user.username = new_username
-
-        # Update password if a new one is provided
-        if new_password:
-            current_user.password_hash = generate_password_hash(new_password)
-
+        # Update user information
+        current_user.username = new_username
+        current_user.poste = new_poste
         db.session.commit()
-        flash('Account updated successfully!', 'success')
+
+        flash("Your account information has been updated!", "success")
         return redirect(url_for('account'))
 
     return render_template('account.html')
+
+
+@app.route('/change-password', methods=['POST'])
+@login_required
+def change_password():
+    old_password = request.form.get('old_password')
+    new_password = request.form.get('new_password')
+    confirm_password = request.form.get('confirm_password')
+
+    # Check if the old password matches
+    if not current_user.check_password(old_password):
+        flash("Incorrect current password.", "danger")
+        return redirect(url_for('account', section='password'))
+
+    # Validate new password strength
+    if len(new_password) < 8 or not any(char.isdigit() for char in new_password) or not any(char.isupper() for char in new_password) or not any(char in "@$!%*?&" for char in new_password):
+        flash("New password must be at least 8 characters long, contain a number, an uppercase letter, and a special character.", "danger")
+        return redirect(url_for('account', section='password'))
+
+    # Check if new password matches confirmation
+    if new_password != confirm_password:
+        flash("New passwords do not match.", "danger")
+        return redirect(url_for('account', section='password'))
+
+    # Update password
+    current_user.set_password(new_password)
+    db.session.commit()
+    
+    flash("Your password has been updated successfully!", "success")
+    return redirect(url_for('account'))
+
+# Change notification preferences
+@app.route('/edit-notification', methods=['POST'])
+@login_required
+def edit_notification():
+    data = request.get_json()
+    if "email_notifications" in data:
+        current_user.email_notifications = data["email_notifications"]
+        db.session.commit()
+        return jsonify({"success": True, "message": "Notification preferences updated"})
+    return jsonify({"success": False, "message": "Invalid request"}), 400
 
 # Main Route (Protected)
 @app.route('/', methods=['GET', 'POST'])
