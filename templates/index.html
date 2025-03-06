@@ -3,42 +3,6 @@
 {% block title %}Home - Evodev{% endblock %}
 
 {% block content %}
-<!-- Sidebar Navigation -->
-<div id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-        <button id="toggleSidebar" class="toggle-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12h12m-6-6v12" />
-            </svg>
-        </button>
-        <h2 class="sidebar-title">My Submissions</h2>
-    </div>
-    <div class="sidebar-content" id="submissionList">
-        {% if submissions %}
-            {% for submission in submissions %}
-                <div class="submission-item" data-id="{{ submission.id }}">
-                    <span class="submission-text">{{ submission.description[:15] }}...</span>
-                    <button class="delete-btn" title="Delete">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                            <path d="M5.5 5.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-4a.5.5 0 0 1-.5-.5v-6zM5.118 3L4 4h8l-1.118-1H5.118zM2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v.5H2V4zm1 1h9v7.5A1.5 1.5 0 0 1 11 14h-6a1.5 1.5 0 0 1-1.5-1.5V5z"/>
-                        </svg>
-                    </button>
-                    
-                </div>
-            {% endfor %}
-        {% else %}
-            <p class="no-submissions">No submissions yet.</p>
-        {% endif %}
-    </div>
-
-    <!-- User Avatar & Account Settings -->
-    <div class="sidebar-footer">
-        <a href="{{ url_for('account') }}" class="user-avatar">
-            <img src="{{ url_for('static', filename='img/avatar.png') }}" alt="User Avatar">
-            <span class="username">{{ current_user.username }}</span>
-        </a>
-    </div>
-</div>
 <div class="app-container">
     <div class="app-header">
         <h1 class="app-title">GPT Notifier</h1>
