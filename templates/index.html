@@ -11,21 +11,34 @@
 
     <div class="card">
         <div class="card-header">
-            <h2 class="card-title">
-                Fill Your Request
-                {% if config.TEST_MODE %}
-                <span class="test-mode-badge">Test Mode</span>
-                {% endif %}
-            </h2>
+            <h2 class="card-title">Fill Your Request</h2>
         </div>
 
         <div class="card-body">
             <form id="assistantForm" enctype="multipart/form-data">
+                <!-- Project Name Input -->
+                <div class="mb-4">
+                    <label for="project_name" class="form-label">Project Name</label>
+                    <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter the project name" required>
+                </div>
+
+                <!-- Description Input -->
                 <div class="mb-4">
                     <label for="description" class="form-label">What is the client's request or issue?</label>
                     <textarea class="form-control" id="description" name="description" placeholder="Describe your request in detail..." rows="4" required></textarea>
                 </div>
-                
+
+                <!-- Priority Selection -->
+                <div class="mb-4">
+                    <label for="priority" class="form-label">Priority Level</label>
+                    <select class="form-control" id="priority" name="priority">
+                        <option value="urgent">🟥 Urgent</option>
+                        <option value="normal" selected>🟨 Normal</option>
+                        <option value="faible">🟦 Low</option>
+                    </select>
+                </div>
+
+                <!-- Photo Upload Section -->
                 <div class="mb-4">
                     <label class="form-label">Photos (Optional)</label>
                     <div class="file-upload-container" id="file-upload-container">
@@ -36,45 +49,22 @@
                     </div>
                     <div id="preview" class="mt-2"></div>
                 </div>
-                
+
                 <button type="submit" class="btn btn-primary" id="submitBtn">
                     <span class="spinner-container d-none" id="submitSpinner">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </span>
-                    Help me write this ticket
+                    Submit Request
                 </button>
-                <!-- Star SVG Wrapper (for animation) -->
-                <span class="magic-stars" id="magicStars">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="0" stroke="currentColor" class="magic-star">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-                    </svg>
-                </span>
             </form>
-            
-            <div id="responseContainer" class="response-container mt-4 d-none">
-                <div class="response-header">
-                    <div class="response-icon">💬</div>
-                    <h3 class="response-title">Edit Before Sending to Slack</h3>
-                </div>
-                <div class="mb-4">
-                    <textarea class="form-control" id="editableResponse" rows="8" placeholder="AI response will appear here..."></textarea>
-                    <label for="priority" class="form-label">Priority Level</label>
-                    <select class="form-control" id="priority">
-                        <option value="urgent">🟥 Urgent</option>
-                        <option value="normal" selected>🟨 Normal</option>
-                        <option value="low">🟦 Low</option>
-                    </select>
-                    <div class="form-text mt-2">Feel free to edit this response before sharing it with your team.</div>
-                </div>
-                
-                <button class="btn btn-success" id="sendToSlackBtn">
-                    <span class="spinner-container d-none" id="slackSpinner">
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    </span>
-                    Send to Slack
-                </button>
+
+            <!-- Success Message (Hidden Initially) -->
+            <div id="successMessage" class="alert alert-success mt-3 d-none">
+                ✅ Your request has been successfully processed and sent!
             </div>
         </div>
     </div>
 </div>
+
+
 {% endblock %}

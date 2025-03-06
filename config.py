@@ -24,3 +24,8 @@ class Config:
     # Slack credentials
     SLACK_BOT_TOKEN = os.environ.get('SLACK_BOT_TOKEN')
     SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
+
+    # Slack credentials
+    AIRTABLE_API_KEY = os.environ.get('AIRTABLE_API_KEY')
+    AIRTABLE_BASE_ID = os.environ.get('AIRTABLE_BASE_ID')
+    AIRTABLE_TABLE_NAME = os.environ.get('AIRTABLE_TABLE_NAME')
