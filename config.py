@@ -15,7 +15,7 @@ class Config:
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max upload size
 
     # Authentication settings
-    SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(INSTANCE_DIR, 'site.db')}"  # Use SQLite for simplicity
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Test mode flag - set to True to use mock responses
