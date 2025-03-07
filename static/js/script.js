@@ -92,14 +92,18 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
+            // Replace the success message code with this
             if (data.success) {
-                successMessage.classList.remove("d-none"); // Show success message
-                form.reset(); // Reset the form
-                previewDiv.innerHTML = ""; // Clear image previews
-
-                // Auto-dismiss the success message after 5 seconds
+                successMessage.classList.remove("d-none");
+                successMessage.classList.add("show");
+                form.reset();
+                previewDiv.innerHTML = "";
+                
                 setTimeout(() => {
-                    successMessage.classList.add("d-none");
+                    successMessage.classList.remove("show");
+                    setTimeout(() => {
+                        successMessage.classList.add("d-none");
+                    }, 300);
                 }, 5000);
             } else {
                 alert("Error processing request. Please try again.");

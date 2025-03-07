@@ -60,6 +60,13 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
+.card-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
 .card-body {
     padding: 1.5rem;
 }
@@ -184,14 +191,26 @@ textarea.form-control {
 }
 
 /* ===== SUCCESS MESSAGE ===== */
+/* Add this to your CSS */
 #successMessage {
-    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
     background: var(--secondary-color);
     color: white;
-    padding: 12px;
+    padding: 15px 20px;
     border-radius: var(--border-radius);
-    text-align: center;
-    margin-top: 10px;
+    box-shadow: var(--box-shadow);
+    transform: translateX(120%);
+    transition: transform var(--transition-normal);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#successMessage.show {
+    transform: translateX(0);
 }
 
 /* ===== RESPONSIVE STYLES ===== */
@@ -206,5 +225,18 @@ textarea.form-control {
 
     .btn {
         width: 100%;
+    }
+
+    #successMessage {
+        right: 5%;
+        left: 5%;
+        bottom: 10px;
+        transform: translateY(120%);
+        width: 90%;
+        justify-content: center;
+    }
+    
+    #successMessage.show {
+        transform: translateY(0);
     }
 }
