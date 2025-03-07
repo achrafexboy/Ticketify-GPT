@@ -3,10 +3,6 @@ from dotenv import load_dotenv
 
 load_dotenv('.env.dev')
 
-# Ensure instance directory exists
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-INSTANCE_DIR = os.path.join(BASE_DIR, 'instance')
-os.makedirs(INSTANCE_DIR, exist_ok=True)  # ✅ Create instance folder if missing
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'default-secret-key')
@@ -15,8 +11,8 @@ class Config:
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max upload size
 
     # Authentication settings
-    SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(INSTANCE_DIR, 'site.db')}"  # Use SQLite for simplicity
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(INSTANCE_DIR, 'site.db')}"  # Use SQLite for simplicity
+    # SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Test mode flag - set to True to use mock responses
     TEST_MODE = os.environ.get('TEST_MODE', 'false').lower() == 'true'
@@ -28,3 +24,8 @@ class Config:
     # Slack credentials
     SLACK_BOT_TOKEN = os.environ.get('SLACK_BOT_TOKEN')
     SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
+
+    # Slack credentials
+    AIRTABLE_API_KEY = os.environ.get('AIRTABLE_API_KEY')
+    AIRTABLE_BASE_ID = os.environ.get('AIRTABLE_BASE_ID')
+    AIRTABLE_TABLE_NAME = os.environ.get('AIRTABLE_TABLE_NAME')
