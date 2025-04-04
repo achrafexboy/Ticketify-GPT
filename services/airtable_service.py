@@ -54,7 +54,7 @@ class AirtableService:
             if update_response.status_code not in [200, 201]:
                 return False, f"Error attaching images: {update_response.json()}"
 
-        return True, f"https://airtable.com/{self.base_id}/{self.table_name}/{record_id}"
+        return True, record_id, f"https://airtable.com/{self.base_id}/{self.table_name}/{record_id}"
 
     def upload_attachment(self, record_id, field_name, file_path):
         """
@@ -86,3 +86,25 @@ class AirtableService:
         except Exception as e:
             print(f"Upload error: {str(e)}")
             return None
+
+    def assign_ticket_to_user(self, record_id, user_id):
+        """
+        Assign the ticket to the user in Airtable by updating the 'assigned' field.
+        """
+        try:
+            # Make the request to Airtable to update the 'assigned' field
+            data = {
+                "fields": {
+                    "Assigned": user_id  # Assuming "Assigned" field contains the user ID or name
+                }
+            }
+            update_url = f"{self.url}/{record_id}"
+            response = requests.patch(update_url, headers=self.headers, json=data)
+
+            if response.status_code in [200, 201]:
+                return True, f"Ticket successfully assigned to {user_id}"
+            else:
+                return False, f"Error assigning ticket in Airtable: {response.json()}"
+
+        except Exception as e:
+            return False, f"Error assigning ticket to user: {str(e)}"

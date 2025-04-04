@@ -1,18 +1,16 @@
 import os
-import uuid
-from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
+from flask import Flask, render_template, request, jsonify, flash, redirect, url_for, request
 from werkzeug.utils import secure_filename
 from config import Config
 from services.openai_service import OpenAIService
 from services.slack_service import SlackService
 from services.airtable_service import AirtableService
+import uuid
+import json
 
 # Initialize Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
-
-# Ensure upload directory exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize services
 openai_service = OpenAIService(
@@ -30,6 +28,43 @@ airtable_service = AirtableService(
     base_id=app.config['AIRTABLE_BASE_ID'],
     table_name=app.config['AIRTABLE_TABLE_NAME']
 )
+
+# Slack interaction route to capture the button click
+@app.route('/slack/actions', methods=['POST'])
+def slack_actions():
+    # Parse the incoming payload from Slack's interactive message
+    payload = request.form.get('payload')
+    if not payload:
+        return jsonify({'text': 'No payload received!'}), 400
+    
+    data = json.loads(payload)
+    actions = data.get('actions', [])
+    
+    # Check if the "Accept Ticket" button was clicked
+    if actions:
+        action = actions[0]
+        if action.get('action_id') == 'accept_ticket':
+            ticket_url = data["message"]["attachments"][0]["original_url"] # The ticket URL passed with the button
+            ticket_id = action.get('value')  # The ticket ID passed with the button
+            user_id = data.get('user', {}).get('name')  # The user who clicked the button
+            message_ts = data.get('message', {}).get('ts')  # The timestamp of the original message
+            
+            # Call SlackService to update the ticket status
+            success, response = slack_service.update_ticket_status(ticket_url, user_id, message_ts)
+            if success:
+                # Call AirtableService to update the "assigned" field for the ticket
+                airtable_success, airtable_response = airtable_service.assign_ticket_to_user(ticket_id, user_id)
+                if airtable_success:
+                    return jsonify({
+                        'response_action': 'update',
+                        'text': f"Ticket has been accepted by <@{user_id}> and assigned successfully."
+                    })
+                else:
+                    return jsonify({'text': f"Error assigning ticket in Airtable: {airtable_response}"}), 400
+            else:
+                return jsonify({'text': response}), 400
+    
+    return jsonify({'text': 'Action not recognized!'}), 400
 
 # File Upload Helper Function
 def allowed_file(filename):
@@ -63,12 +98,12 @@ def index():
         assistant_response = openai_service.process_request(full_request, image_paths)
 
         # Create Ticket in Airtable with Image Uploads
-        _, link = airtable_service.create_ticket(project_name, priority, assistant_response, description, image_paths)
+        _, record_id, link = airtable_service.create_ticket(project_name, priority, assistant_response, description, image_paths)
 
         # Send to Slack
         priority_emoji = {"urgent": "🟥", "normal": "🟨", "faible": "🟦"}
         formatted_message = f"📌 *Project: {project_name}*\n{priority_emoji.get(priority, '🟨')} *Priority: {priority.capitalize()}*\n*Link:* {link}\n\n{assistant_response}\n"
-        slack_service.send_message(formatted_message, image_paths)
+        slack_service.send_message(formatted_message, record_id, image_paths)
 
         return jsonify({"success": True})
 
