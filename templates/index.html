@@ -1,50 +1,50 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Evodev{% endblock %}
+{% block title %}Accueil - Evodev{% endblock %}
 
 {% block content %}
 <div class="app-container">
     <div class="app-header">
         <h1 class="app-title">GPT Notifier</h1>
-        <p class="app-subtitle">Get intelligent tickets and share them with devs</p>
+        <p class="app-subtitle">Créez des tickets intelligents et partagez-les avec les développeurs</p>
     </div>
 
     <div class="card">
         <div class="card-header">
-            <h2 class="card-title">Fill Your Request</h2>
+            <h2 class="card-title">Remplissez votre demande</h2>
         </div>
 
         <div class="card-body">
             <form id="assistantForm" enctype="multipart/form-data">
-                <!-- Project Name Input -->
+                <!-- Nom du Projet -->
                 <div class="mb-4">
-                    <label for="project_name" class="form-label">Project Name</label>
-                    <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter the project name" required>
+                    <label for="project_name" class="form-label">Nom du Projet</label>
+                    <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Entrez le nom du projet" required>
                 </div>
 
-                <!-- Description Input -->
+                <!-- Description -->
                 <div class="mb-4">
-                    <label for="description" class="form-label">What is the client's request or issue?</label>
-                    <textarea class="form-control" id="description" name="description" placeholder="Describe your request in detail..." rows="4" required></textarea>
+                    <label for="description" class="form-label">Décrivez votre demande</label>
+                    <textarea class="form-control" id="description" name="description" placeholder="Décrivez votre demande en détail..." rows="4" required></textarea>
                 </div>
 
-                <!-- Priority Selection -->
+                <!-- Niveau de Priorité -->
                 <div class="mb-4">
-                    <label for="priority" class="form-label">Priority Level</label>
+                    <label for="priority" class="form-label">Niveau de Priorité</label>
                     <select class="form-control" id="priority" name="priority">
-                        <option value="urgent">🟥 Urgent</option>
-                        <option value="normal" selected>🟨 Normal</option>
-                        <option value="faible">🟦 Low</option>
+                        <option value="urgent">🟥 Urgente</option>
+                        <option value="normal" selected>🟨 Normale</option>
+                        <option value="faible">🟦 Faible</option>
                     </select>
                 </div>
 
-                <!-- Photo Upload Section -->
+                <!-- Section de Téléchargement de Photos -->
                 <div class="mb-4">
-                    <label class="form-label">Photos (Optional)</label>
+                    <label class="form-label">Photos (Optionnel)</label>
                     <div class="file-upload-container" id="file-upload-container">
                         <div class="file-upload-icon">📸</div>
-                        <p class="file-upload-text">Drag & drop images here or click to browse</p>
-                        <p class="small text-muted">Supported formats: JPG, PNG, GIF</p>
+                        <p class="file-upload-text">Glissez-déposez des images ici ou cliquez pour parcourir</p>
+                        <p class="small text-muted">Formats supportés : JPG, PNG, GIF</p>
                         <input class="d-none" type="file" id="photos" name="photos" multiple accept="image/*">
                     </div>
                     <div id="preview" class="mt-2"></div>
@@ -54,20 +54,23 @@
                     <span class="spinner-container d-none" id="submitSpinner">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </span>
-                    Submit Request
+                    Soumettre la Demande
                 </button>
             </form>
 
-            <!-- Success Message (Hidden Initially) -->
+            <!-- Message de Succès (Caché Initialement) -->
             <div id="successMessage" class="d-none">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                Request submitted successfully!
+                Demande soumise avec succès !
             </div>
         </div>
     </div>
 </div>
 
-
+<!-- Footer -->
+<footer class="app-footer text-center mt-4">
+    <p>Made with 💜 by Evodev</p>
+</footer>
 {% endblock %}
