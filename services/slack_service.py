@@ -66,6 +66,23 @@ class SlackService:
         except SlackApiError as e:
             return False, f"Error sending message to Slack: {e.response['error']}"
 
+    def send_direct_message(self, slack_id, message):
+        """
+        Sends a direct message to a user identified by their Slack ID.
+        """
+        if self.test_mode:
+            print(f"[TEST MODE] Would send DM to {slack_id}: {message[:100]}...")
+            return True, "Direct message would be sent to Slack (test mode)"
+
+        try:
+            response = self.client.chat_postMessage(
+                channel=slack_id,
+                text=message
+            )
+            return True, "Direct message sent successfully"
+        except SlackApiError as e:
+            return False, f"Error sending direct message to Slack: {e.response['error']}"
+    
     def update_ticket_status(self, ticket_url, user_id, message_ts):
         """
         Update the Slack message to show the user who accepted the ticket.

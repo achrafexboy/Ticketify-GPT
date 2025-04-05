@@ -93,9 +93,17 @@ def index():
                 photo.save(file_path)
                 image_paths.append(file_path)
 
+        # Check for project attachments in Airtable
+        project_attachments, slack_id = airtable_service.get_project_attachments(project_name)
+        if project_attachments:
+            # Convert Airtable attachments (URLs) to a format OpenAI can use
+            attachment_urls = [attachment['url'] for attachment in project_attachments]
+        else:
+            attachment_urls = []
+
         # Process AI Request
         full_request = f"Project: {project_name}\nPriority: {priority.capitalize()}\n\n{description}"
-        assistant_response = openai_service.process_request(full_request, image_paths)
+        assistant_response = openai_service.process_request(full_request, image_paths, attachment_urls)
 
         # Create Ticket in Airtable with Image Uploads
         _, record_id, link = airtable_service.create_ticket(project_name, priority, assistant_response, description, image_paths)
@@ -104,6 +112,12 @@ def index():
         priority_emoji = {"urgent": "🟥", "normal": "🟨", "faible": "🟦"}
         formatted_message = f"📌 *Project: {project_name}*\n{priority_emoji.get(priority, '🟨')} *Priority: {priority.capitalize()}*\n*Link:* {link}\n\n{assistant_response}\n"
         slack_service.send_message(formatted_message, record_id, image_paths)
+
+        # Notify the user via Slack using the Slack ID
+        print(slack_id)
+        if slack_id:
+            notification_message = f"Hello <@{slack_id}>! \nA new ticket has been sent for the project: *{project_name}*.\n*Link*: {link}"
+            slack_service.send_direct_message(slack_id, notification_message)
 
         return jsonify({"success": True})
 

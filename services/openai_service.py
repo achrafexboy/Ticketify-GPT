@@ -2,6 +2,10 @@ import os
 import time
 from openai import OpenAI
 from werkzeug.utils import secure_filename
+from PyPDF2 import PdfReader
+import requests
+from io import BytesIO
+import re
 
 class OpenAIService:
     def __init__(self, api_key, assistant_id):
@@ -9,11 +13,44 @@ class OpenAIService:
         self.assistant_id = assistant_id
         self.test_mode = api_key == 'test-key-not-real'
     
-    def process_request(self, description, image_paths):
+    def process_request(self, description, image_paths, file_urls=[]):
         # If in test mode, return a mock response
         if self.test_mode:
             return f"This is a test response. I received: {description[:50]}... and {len(image_paths)} images."
         
+        # Extract text from PDFs
+        pdf_texts = []
+        for pdf_url in file_urls:
+            try:
+                response = requests.get(pdf_url)
+                file = BytesIO(response.content)
+
+                # Try to get filename from the response headers
+                content_disposition = response.headers.get('content-disposition')
+                if content_disposition:
+                    filename_match = re.findall('filename="?([^"]+)"?', content_disposition)
+                    filename = filename_match[0] if filename_match else "downloaded_file.pdf"
+                else:
+                    filename = "downloaded_file.pdf"
+
+                # Save the downloaded file with a specific name
+                with open(filename, "wb") as f:
+                    f.write(file.getbuffer())
+
+                reader = PdfReader(file)
+                pdf_text = " ".join([page.extract_text() for page in reader.pages if page.extract_text()])
+                
+                # Remove the local file after processing
+                os.remove(filename)
+
+                pdf_texts.append(pdf_text)
+            except Exception as e:
+                print(f"Error reading PDF {pdf_url}: {e}")
+        
+        # Combine description with extracted PDF text
+        if pdf_texts:
+            description += "\n\n" + "\n\n".join(pdf_texts)
+
         # Create a thread
         thread = self.client.beta.threads.create()
         

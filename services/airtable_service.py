@@ -7,6 +7,7 @@ class AirtableService:
         self.base_id = base_id
         self.table_name = table_name
         self.url = f"https://api.airtable.com/v0/{self.base_id}/{self.table_name}"
+        self.semi_url = f"https://api.airtable.com/v0/{self.base_id}/tblbCJ1o8i0qBdfSN"
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
@@ -108,3 +109,24 @@ class AirtableService:
 
         except Exception as e:
             return False, f"Error assigning ticket to user: {str(e)}"
+
+    def get_project_attachments(self, project_name):
+        """
+        Checks if the project name exists in the table and retrieves its 'Cadrage' (attachments) and 'Slack ID' fields.
+        """
+        query_url = f"{self.semi_url}?filterByFormula={{Name}}='{project_name}'"
+        response = requests.get(query_url, headers=self.headers)
+
+        if response.status_code == 200:
+            records = response.json().get('records', [])
+            if records:
+                # Assuming the first matching record is the one we need
+                fields = records[0]['fields']
+                cadrage_field = fields.get('Cadrage', [])
+                slack_id = fields.get('Slack ID', None)
+                return cadrage_field, slack_id  # Return both fields
+            else:
+                return None, None  # No matching project found
+        else:
+            print(f"Error querying Airtable: {response.json()}")
+            return None, None
