@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify, flash, redirect, url_for, request
+from flask import Flask, render_template, request, jsonify, request
 from werkzeug.utils import secure_filename
 from config import Config
 from services.openai_service import OpenAIService
@@ -26,7 +26,8 @@ slack_service = SlackService(
 airtable_service = AirtableService(
     api_key=app.config['AIRTABLE_API_KEY'],
     base_id=app.config['AIRTABLE_BASE_ID'],
-    table_name=app.config['AIRTABLE_TABLE_NAME']
+    table_name_tickets=app.config['AIRTABLE_TABLE_NAME_TICKET'],
+    table_name_projects=app.config['AIRTABLE_TABLE_NAME_PROJECT']
 )
 
 # Slack interaction route to capture the button click
@@ -114,7 +115,6 @@ def index():
         slack_service.send_message(formatted_message, record_id, image_paths)
 
         # Notify the user via Slack using the Slack ID
-        print(slack_id)
         if slack_id:
             notification_message = f"Hello <@{slack_id}>! \nA new ticket has been sent for the project: *{project_name}*.\n*Link*: {link}"
             slack_service.send_direct_message(slack_id, notification_message)

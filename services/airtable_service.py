@@ -2,12 +2,13 @@ import requests
 import base64
 
 class AirtableService:
-    def __init__(self, api_key, base_id, table_name):
+    def __init__(self, api_key, base_id, table_name_tickets, table_name_projects):
         self.api_key = api_key
         self.base_id = base_id
-        self.table_name = table_name
-        self.url = f"https://api.airtable.com/v0/{self.base_id}/{self.table_name}"
-        self.semi_url = f"https://api.airtable.com/v0/{self.base_id}/tblbCJ1o8i0qBdfSN"
+        self.table_name_tickets = table_name_tickets
+        self.table_name_projects = table_name_projects
+        self.url = f"https://api.airtable.com/v0/{self.base_id}/{self.table_name_tickets}"
+        self.semi_url = f"https://api.airtable.com/v0/{self.base_id}/{self.table_name_projects}"
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
@@ -55,7 +56,7 @@ class AirtableService:
             if update_response.status_code not in [200, 201]:
                 return False, f"Error attaching images: {update_response.json()}"
 
-        return True, record_id, f"https://airtable.com/{self.base_id}/{self.table_name}/{record_id}"
+        return True, record_id, f"https://airtable.com/{self.base_id}/{self.table_name_tickets}/{record_id}"
 
     def upload_attachment(self, record_id, field_name, file_path):
         """
