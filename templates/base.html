@@ -10,7 +10,6 @@
 
     <!-- Link to CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
 
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='evochat.svg') }}">
     
@@ -34,16 +33,6 @@
         {% endwith %}
 
         {% block content %}{% endblock %}
-    </div>
-    <!-- Logout Confirmation Modal -->
-    <div id="logoutConfirmModal" class="modal-container d-none">
-        <div class="modal-content">
-            <h3>Are you sure you want to log out?</h3>
-            <div class="modal-buttons">
-                <button class="btn-cancel" id="cancelLogout">Cancel</button>
-                <button class="btn-confirm" id="confirmLogout">Logout</button>
-            </div>
-        </div>
     </div>
 
     <!-- JavaScript -->
