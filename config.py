@@ -9,10 +9,6 @@ class Config:
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max upload size
-
-    # Authentication settings
-    # SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(INSTANCE_DIR, 'site.db')}"  # Use SQLite for simplicity
-    # SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Test mode flag - set to True to use mock responses
     TEST_MODE = os.environ.get('TEST_MODE', 'false').lower() == 'true'
@@ -30,3 +26,6 @@ class Config:
     AIRTABLE_BASE_ID = os.environ.get('AIRTABLE_BASE_ID')
     AIRTABLE_TABLE_NAME_TICKET = os.environ.get('AIRTABLE_TABLE_NAME_TICKET')
     AIRTABLE_TABLE_NAME_PROJECT = os.environ.get('AIRTABLE_TABLE_NAME_PROJECT')
+
+    # Debug mode
+    FLASK_DEBUG = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
