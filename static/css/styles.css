@@ -1,3 +1,6 @@
+/* Import Montserrat font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
 /* ===== CSS VARIABLES ===== */
 :root {
     --primary-color: #4f46e5;
@@ -19,7 +22,7 @@
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Montserrat', sans-serif; /* Apply Montserrat globally */
     line-height: 1.5;
 }
 
@@ -93,6 +96,13 @@ body {
 
 textarea.form-control {
     min-height: 120px;
+}
+
+#charCount {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: block;
+    text-align: right;
 }
 
 /* ===== FILE UPLOAD ===== */
@@ -191,7 +201,6 @@ textarea.form-control {
 }
 
 /* ===== SUCCESS MESSAGE ===== */
-/* Add this to your CSS */
 #successMessage {
     position: fixed;
     bottom: 20px;

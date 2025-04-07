@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitBtn = document.getElementById("submitBtn");
     const submitSpinner = document.getElementById("submitSpinner");
     const successMessage = document.getElementById("successMessage");
+    const descriptionInput = document.getElementById("description");
+    const charCount = document.getElementById("charCount");
 
     // 🔹 File Upload Handling
     fileUploadContainer.addEventListener("click", function () {
@@ -66,6 +68,14 @@ document.addEventListener("DOMContentLoaded", function () {
         handleFiles(photosInput.files);
     }
 
+    // 🔹 Character Counter for Description
+    descriptionInput.addEventListener("input", function () {
+        // const maxLength = 500; // Set a maximum character limit
+        const currentLength = descriptionInput.value.length;
+
+        charCount.textContent = `${currentLength} caractères`;
+    });
+
     // 🔹 Form Submission Handling
     form.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -92,13 +102,12 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => response.json())
         .then(data => {
-            // Replace the success message code with this
             if (data.success) {
                 successMessage.classList.remove("d-none");
                 successMessage.classList.add("show");
                 form.reset();
                 previewDiv.innerHTML = "";
-                
+
                 setTimeout(() => {
                     successMessage.classList.remove("show");
                     setTimeout(() => {

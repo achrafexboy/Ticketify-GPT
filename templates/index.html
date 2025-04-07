@@ -6,7 +6,7 @@
 <div class="app-container">
     <div class="app-header">
         <h1 class="app-title">GPT Notifier</h1>
-        <p class="app-subtitle">Créez des tickets intelligents et partagez-les avec les développeurs</p>
+        <p class="app-subtitle">Créez des tickets intelligents et partagez-les avec nos développeurs</p>
     </div>
 
     <div class="card">
@@ -25,7 +25,14 @@
                 <!-- Description -->
                 <div class="mb-4">
                     <label for="description" class="form-label">Décrivez votre demande</label>
-                    <textarea class="form-control" id="description" name="description" placeholder="Décrivez votre demande en détail..." rows="4" required></textarea>
+                    <textarea 
+                        class="form-control" 
+                        id="description" 
+                        name="description" 
+                        placeholder="Expliquez votre demande en détail ..." 
+                        rows="6" 
+                        required></textarea>
+                    <small id="charCount" class="text-muted">0 caractères</small>
                 </div>
 
                 <!-- Niveau de Priorité -->
