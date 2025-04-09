@@ -124,5 +124,5 @@ def index():
     return render_template('index.html', config=app.config)
 
 if __name__ == '__main__':
-    debug = app.config['FLASK_DEBUG'] == 'true'
+    debug = app.config['FLASK_DEBUG']
     app.run(debug=debug)
