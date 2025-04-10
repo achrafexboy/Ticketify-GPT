@@ -12,6 +12,9 @@ import json
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Create upload folder if it doesn't exist
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 # Initialize services
 openai_service = OpenAIService(
     app.config['OPENAI_API_KEY'],
