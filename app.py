@@ -122,6 +122,13 @@ def index():
             notification_message = f"Hello <@{slack_id}>! \nA new ticket has been sent for the project: *{project_name}*.\n*Link*: {link}"
             slack_service.send_direct_message(slack_id, notification_message)
 
+        # Delete files after processing
+        for path in image_paths:
+            try:
+                os.remove(path)
+            except Exception as e:
+                return jsonify({"success": False, "message": f"Error deleting file {path}: {e}"})
+
         return jsonify({"success": True})
 
     return render_template('index.html', config=app.config)
