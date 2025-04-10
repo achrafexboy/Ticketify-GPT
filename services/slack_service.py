@@ -8,7 +8,7 @@ class SlackService:
         self.channel = channel
         self.test_mode = bot_token == 'test-slack-token'
 
-    def send_message(self, message, record_id, image_paths=None):
+    def send_message(self, message, record_id, link_airtable, image_paths=None):
         """
         Sends a Slack message with text and a button to accept the ticket.
         """
@@ -21,6 +21,13 @@ class SlackService:
             message_response = self.client.chat_postMessage(
                 channel=self.channel,
                 text=message,
+                metadata={
+                    "event_type": "ticket_created",
+                    "event_payload": {
+                        "record_id": record_id,
+                        "ticket_url": f"{link_airtable}"
+                    }
+                },
                 blocks=[
                     {
                         "type": "section",

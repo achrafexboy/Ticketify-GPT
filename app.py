@@ -48,7 +48,7 @@ def slack_actions():
     if actions:
         action = actions[0]
         if action.get('action_id') == 'accept_ticket':
-            ticket_url = data["message"]["attachments"][0]["original_url"] # The ticket URL passed with the button
+            ticket_url = data["message"]["metadata"]["event_payload"]["ticket_url"] # The ticket URL passed with the button
             ticket_id = action.get('value')  # The ticket ID passed with the button
             user_id = data.get('user', {}).get('name')  # The user who clicked the button
             message_ts = data.get('message', {}).get('ts')  # The timestamp of the original message
@@ -115,7 +115,7 @@ def index():
         # Send to Slack
         priority_emoji = {"urgent": "🟥", "normal": "🟨", "faible": "🟦"}
         formatted_message = f"📌 *Project: {project_name}*\n{priority_emoji.get(priority, '🟨')} *Priority: {priority.capitalize()}*\n*Link:* {link}\n\n{assistant_response}\n"
-        slack_service.send_message(formatted_message, record_id, image_paths)
+        slack_service.send_message(formatted_message, record_id, link, image_paths)
 
         # Notify the user via Slack using the Slack ID
         if slack_id:
